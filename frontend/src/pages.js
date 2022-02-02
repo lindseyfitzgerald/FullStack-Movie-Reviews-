@@ -1,90 +1,110 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Movie from "./Movie";
-//import "react-datepicker/dist/react-datepicker.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Form, Button, Row} from 'react-bootstrap';
+import NavBar from './NavBar';
 
-export function Home({ movies = [], onRemoveMovie = f => f }) {
-  
+export function Home() {
+    const [movies, setMovies] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/movies')
+    .then((response) => response.json())
+    .then(setMovies)
+}, []);
+
     if( movies == null) return null;
     return (
         <div>
+            <NavBar />
             <h1>Movie Reviews</h1>
-            { movies.map(( movie, i) => { return <Movie key={i} {...movie} onRemove={onRemoveMovie}></Movie>}) }  
+            { movies.map(( movie, i) => { return <Movie key={i} {...movie} ></Movie>}) }
             
         </div>
     );
 }
 
-export function Add({ onNewMovie = f => f}) {
+export function Add() {
     
-    const [name, setName] = useState("");
-    const [date, setDate] = useState("");
-    const [actors, setActors] = useState("");
-    const [poster, setPoster] = useState("");
-    const [rating, setRating] = useState(0);
+const [name, setName] = useState("");
+const [date, setDate] = useState("");
+const [actors, setActors] = useState("");
+const [poster, setPoster] = useState("");
+const [rating, setRating] = useState(0);
 
-    const submit = e => {
-        e.preventDefault();
-              
-        onNewMovie(name, date, actors, poster, rating);
-        setName("");
-        setDate("");
-        setActors("");
-        setPoster("");
-        setRating(0);
-    };
+const formData = new FormData();
 
-    return (
-        <div>
-            <h1>Add Movie Review</h1>
-      
-            <form onSubmit={submit}>
-                <div>
-                <input value={name}
-                    onChange={event => setName(event.target.value)}
-                    type="text"
-                    placeholder="Movie Title" required />
-                </div>
-                <div>
-                <input value={date}
-                    onChange={event => setDate(event.target.value)}
-                    type="text"
-                    placeholder="Release Date (Month - Year)" required />
-                </div>
-                
-                <div>
-                <input value={actors}
-                    onChange={event => setActors(event.target.value.split(","))}
-                    type="text"
-                    placeholder="Actors (use comma)" required />
-                </div>
-                <div>
-                <select value={poster}
-                    onChange={event => setPoster(event.target.value)}>
-                    <option >Select Movie Poster</option>
-                    <option value= './images/polarExpress.jpg' >Polar Express</option>
-                    <option value= './images/dune.jpg' >Dune</option>
-                    <option value= './images/ironman.jpg' >Iron Man</option>
-                    <option value= './images/spiderman.jpg' >Spider Man</option>
-                    <option value= './images/Terminator1.jpg' >Terminator</option>
-                    <option value= './images/avengers.jpg' >Avengers</option>
-                    <option value= './images/Beautyandbeast.jpg' >Beauty and the Beast</option>
-                    <option value= './images/noImageFound.jpg' >No Image Found</option>
-                </select>
-                                        
-                </div>
-                <div>
-                <input value={rating}
-                    onChange={event => setRating(event.target.value)}
-                    type="number" min={0} max={5}
-                    placeholder="Rating from 0 - 5" required />
-                </div>
+const handleSubmit = async(e) => {
+    e.preventDefault();
+    formData.append('name', name);
+    formData.append('date', date);
+    formData.append("actors", actors);
+    formData.append("poster", poster);
+    formData.append("rating", rating);
+    console.log(name);
 
-                <button>Add</button>
+    const addMovie = async () => {
+        const result = await fetch('/api/addMovie', {
+            method: "post",
+            body: formData
+        });
+        const body = await result.json();
+        console.log(body);
+       
+    }
+    addMovie();
+    setName("");
+    setDate("");
+    setActors("");
+    setPoster("");
+    setRating(0);
+};
 
-            </form>
-           
-            
-        </div>
-    );
+return (
+    <>
+    <Row>
+    <NavBar/>
+    </Row>
+    <Row>
+    <h2> Add Movie Review </h2>
+    </Row>
+    <Form onSubmit={handleSubmit} role="form">
+        <Form.Group  as={Row} className="mb-3" controlId="name">
+            <Form.Label>Title</Form.Label>
+            <Form.Control type="text" placeholder="Enter Movie Title" value={name} onChange={event => setName(event.target.value)}/>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="releaseDate">
+            <Form.Label>Release Date</Form.Label>
+            <Form.Control type="date" placeholder="release date" value={date} onChange={event => setDate(event.target.value)}/>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="actors">
+            <Form.Label>Actors</Form.Label>
+            <Form.Control type="text" placeholder="Actors" value={actors} onChange={event => setActors(event.target.value.split(","))}/>
+            <Form.Text className="text-muted">
+            Seperate Actors with comma. 
+            </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="poster">
+            <Form.Label>Poster</Form.Label>
+            <Form.Control type="file" placeholder="Poster" value={poster} onChange={event => setPoster(event.target.value)}></Form.Control>
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="Rating">
+            <Form.Label>Rating</Form.Label>
+            <Form.Control type="number" min={0} max={5} value={rating} placeholder="Rating" onChange={event => setRating(event.target.value)}/>
+        </Form.Group>
+        
+        <Button variant="primary" type="submit">
+            Submit
+        </Button>
+    </Form>
+   </>
+   
+);
 }
+
+
 

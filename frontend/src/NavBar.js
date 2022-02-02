@@ -1,20 +1,25 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Navbar, Nav } from 'react-bootstrap';
+import Container from 'react-bootstrap/Container';
 
-const NavBar = () => {
+class NavBar extends React.Component {
+    render(){
     return(
-        <nav>
-            <ul>
-                <li>
-                    <Link to="/">Home</Link> 
-                </li>
-               
-                <li>
-                    <Link to="/add">Add Review</Link>
-                </li>
-            </ul>
-        </nav>
+       
+        <Navbar  bg="light" expand="lg">
+            <Container>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav" >
+                    <Nav>
+                        <Nav.Link href="/"> Home </Nav.Link>
+                        <Nav.Link href="/add"> Add Review </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+        
     )
+}
 }
 
 export default NavBar;

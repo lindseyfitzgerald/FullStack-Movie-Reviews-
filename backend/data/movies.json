@@ -1,0 +1,30 @@
+[
+    {
+        "name" : "Little Women",
+        "date" : "December 2019",
+        "actors" : ["Saoirse Ronan", "Emma Watson", "Timothée Chalamet"],
+        "poster" : "./images/little_women.jpg",
+        "rating" : 4
+    },
+    {
+        "name" : "Shrek 2",
+        "date" : "May 2004",
+        "actors" : ["Mike Myers", "Eddie Murphy", "Cameron Diaz"],
+        "poster" : "./images/shrek2.jpg",
+        "rating" : 5
+    }, 
+    {
+        "name" : "Harry Potter and the Philosopher's Stone",
+        "date" : "November 2001",
+        "actors" : ["Daniel Radcliffe", "Rupert Grint", "Emma Watson"],
+        "poster" : "./images/hp1.jpg",
+        "rating" : 5
+    },
+    {
+        "name" : "Encanto",
+        "date" : "November 2021",
+        "actors" : ["Stephanie Beatriz", "Maria Cecilia Botero", "John Leguizamo"],
+        "poster" : "./images/encanto.jpeg",
+        "rating" : 3
+    }
+]
