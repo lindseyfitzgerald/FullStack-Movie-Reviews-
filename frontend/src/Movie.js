@@ -5,21 +5,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Axios from 'axios';
 
 export function Movie({name, date, actors, poster, rating}) {
-  const formData = new FormData();
+  
     const handleRemove = async () => {
+      const formData = new FormData();
       formData.append('name', name);
       
-      const removeMovie = async () => {
-        const result = await fetch('/api/removeMovie', {
-            method: "post",
-            body: formData,
-        });
-      const body = await result.json();
-      console.log(body);
-    }
-    removeMovie();
+      Axios.post('/api/removeMovie', formData)
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
   }
       
     return (

@@ -3,6 +3,7 @@ import Movie from "./Movie";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form, Button, Row} from 'react-bootstrap';
 import NavBar from './NavBar';
+import Axios from 'axios';
 
 export function Home() {
     const [movies, setMovies] = useState(null);
@@ -32,18 +33,22 @@ const [actors, setActors] = useState("");
 const [poster, setPoster] = useState("");
 const [rating, setRating] = useState(0);
 
-const formData = new FormData();
 
 const handleSubmit = async(e) => {
     e.preventDefault();
+    const formData = new FormData();
+    
+    //formData.append({'name': name, 'date': date, 'actors': actors, 'poster': poster, 'rating': rating});
     formData.append('name', name);
     formData.append('date', date);
     formData.append("actors", actors);
     formData.append("poster", poster);
     formData.append("rating", rating);
-    console.log(name);
 
-    const addMovie = async () => {
+    Axios.post('/api/addMovie', formData)
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+    /*const addMovie = async () => {
         const result = await fetch('/api/addMovie', {
             method: "post",
             body: formData
@@ -52,7 +57,7 @@ const handleSubmit = async(e) => {
         console.log(body);
        
     }
-    addMovie();
+    addMovie();*/
     setName("");
     setDate("");
     setActors("");
