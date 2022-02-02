@@ -4,11 +4,12 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import express from "express";
 import { MongoClient } from "mongodb";
+import multer from 'multer';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-//const multer = require("multer");
-//const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 
@@ -51,25 +52,26 @@ app.get("/api/movies", async (req, res) => {
   }
 })
 
-app.post('/api/addMovie', async (req, res) => {
+app.post("/api/addMovie", upload.single("file"), function(req, res, next) {
   try {
-      const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true});
-      const db = client.db('react-reviews');
-      console.log(req.body);
-      //const movie = {name:req.body.name, date:req.body.date, actors:req.body.actors,poster:req.body.poster, rating:req.body.rating}
-      //await db.collection('movies').insertOne( movie);
+    const client = await MongoClient.connect('mongodb://localhost:27017', {useNewUrlParser: true});
+    const db = client.db('react-reviews');
+    console.log(req.body.name);
+    const movie = {name:req.body.name, date:req.body.date, actors:req.body.actors,poster:req.body.poster, rating:req.body.rating}
+    await db.collection('movies').insertOne( movie);
 
-      //const movieInfo = await db.collection('movies').find({name:req.params.name}).toArray();
-      
-      res.status(200).json({message: "Success"});
-      client.close();
-  }
-  catch( error) {
-      res.status(500).json( { message: "Error connecting to db", error});
-  }
+    const movieInfo = await db.collection('movies').find({name:req.params.name}).toArray();
+    
+    res.status(200).json({message: "Success"});
+    client.close();
+}
+catch( error) {
+    res.status(500).json( { message: "Error connecting to db", error});
+}
+
 })
 
-app.post('/api/removeMovie', async (req, res) => {
+app.post('/api/removeMovie', upload.single("file"), async (req, res) => {
   try {
       console.log(req.body.name);
 
